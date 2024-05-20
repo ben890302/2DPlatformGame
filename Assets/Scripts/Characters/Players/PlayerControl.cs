@@ -6,6 +6,8 @@ using UnityEngine.InputSystem.Interactions;
 
 public class PlayerControl : MonoBehaviour
 {
+    public Animator animator;
+
     [Header("Rigidbody")]
     private Rigidbody2D rb;
     private float playerGravity;
@@ -46,6 +48,9 @@ public class PlayerControl : MonoBehaviour
 
     [Header("Attack")]
     public bool isAttacking;
+    public float attackMoveSpeed;
+    public bool canReceiveInput;
+    public bool inputReceived;
 
     [Header("Flip")]
     public bool isFacingRight;
@@ -64,6 +69,7 @@ public class PlayerControl : MonoBehaviour
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerGravity = rb.gravityScale;
         canRoll = true;
@@ -73,7 +79,13 @@ public class PlayerControl : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(isDashing)
+        animator.SetBool("IsWalking", isWalking);
+        animator.SetBool("IsGrounded", isGrounded);
+        animator.SetBool("OnWall", onWall);
+        animator.SetBool("IsRolling", isRolling);
+        animator.SetBool("IsDashing", isDashing);
+        animator.SetFloat("YVelocity", rb.velocity.y);
+        if (isDashing)
         {
             return;
         }
@@ -81,17 +93,24 @@ public class PlayerControl : MonoBehaviour
         WallCheck();
         WallSlide();
         CanWallJump();
-        if(!isWallJumping && !isDashing && !isRolling)
+        if(CanMove)
         {
-            rb.velocity = new Vector2(movement * walkSpeed, rb.velocity.y);
-            Flip();
+            if (!isWallJumping && !isDashing && !isRolling)
+            {
+                rb.velocity = new Vector2(movement * walkSpeed, rb.velocity.y);
+                Flip();
+            }
+        }
+        else
+        {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
         }
     }
 
     public void Move(InputAction.CallbackContext context)
     {
         movement = context.ReadValue<Vector2>().x;
-        if (context.performed)
+        if (context.started)
         {
             isWalking = true;
         }
@@ -187,7 +206,7 @@ public class PlayerControl : MonoBehaviour
 
     public void Dash(InputAction.CallbackContext context)
     {
-        if (context.performed && canDash)
+        if (context.started && canDash)
         {
             StartCoroutine(DashCoroutine());
         }
@@ -195,7 +214,6 @@ public class PlayerControl : MonoBehaviour
 
     private IEnumerator DashCoroutine()
     {
-
         canDash = false;
         isDashing = true;
         float dashDirection = isFacingRight ? 1f : -1f;
@@ -211,12 +229,10 @@ public class PlayerControl : MonoBehaviour
 
     public void Attack(InputAction.CallbackContext context)
     {
-        isAttacking = true;
-    }
-
-    public void EndAttack()
-    {
-        isAttacking = false;
+        if(context.started)
+        {
+            animator.SetTrigger("IsAttacking");
+        } 
     }
 
     private void Flip()
@@ -252,6 +268,14 @@ public class PlayerControl : MonoBehaviour
         else
         {
             onWall = false;
+        }
+    }
+
+    public bool CanMove
+    {
+        get
+        {
+            return animator.GetBool("CanMove");
         }
     }
 

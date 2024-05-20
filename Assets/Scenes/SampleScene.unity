@@ -2348,7 +2348,6 @@ GameObject:
   - component: {fileID: 1847387990}
   - component: {fileID: 1847387989}
   - component: {fileID: 1847387992}
-  - component: {fileID: 1847387991}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -2499,6 +2498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8aa6938c904f643b5d139217a050eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
   isWalking: 0
   walkSpeed: 5
   isJumping: 0
@@ -2510,11 +2510,15 @@ MonoBehaviour:
   wallJumpDuration: 0.25
   wallJumpPower: {x: 5, y: 10}
   isRolling: 0
-  rollSpeed: 5
+  rollSpeed: 2.5
   isDashing: 0
-  dashPower: 25
+  dashPower: 15
   dashDuration: 0.25
   dashCooldown: 1
+  isAttacking: 0
+  attackMoveSpeed: 1
+  canReceiveInput: 0
+  inputReceived: 0
   isFacingRight: 0
   isGrounded: 0
   groundCheckPos: {fileID: 908838063}
@@ -2669,23 +2673,27 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0306a804-9994-44b4-ac04-204905a65767
     m_ActionName: Player/Roll[/Keyboard/ctrl]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1847387989}
+        m_TargetAssemblyTypeName: PlayerControl, Assembly-CSharp
+        m_MethodName: Attack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7bcc3d56-1b69-4571-88d5-65fa705fff3b
+    m_ActionName: Player/Attack[/Keyboard/q]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1847387991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847387984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1c38a205e13e1c4f8e07ea1514bfc44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &1847387992
 Animator:
   serializedVersion: 5
